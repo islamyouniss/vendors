@@ -1,0 +1,6 @@
+<div *ngIf="percentage | async as pct">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" [style.width]="pct+'%'" [attr.aria-valuenow]="pct" aria-valuemin="0" aria-valuemax="100">{{pct | number}}%</div>
+    </div>
+    {{downloadURL}}
+</div>

@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {VendorService} from "../../../services/vendor.service";
 import {Vendor} from "../../../models/vendor.model";
+import {Subscription} from "rxjs";
+import {map} from "rxjs/operators";
 
 
 
@@ -10,23 +12,29 @@ import {Vendor} from "../../../models/vendor.model";
     templateUrl: './vendor-details.component.html',
     styleUrls: ['./vendor-details.component.scss']
 })
-export class VendorDetailsComponent implements OnInit {
+export class VendorDetailsComponent implements OnInit, OnDestroy {
     isLoading: boolean = false;
+    httpSubscription: Subscription
     vendorData: Vendor;
     currentId: string = "";
 
     constructor(private router: Router, private activatedRoute: ActivatedRoute, private vendor: VendorService) { }
 
     ngOnInit(): void {
-        this.activatedRoute.params.subscribe(r => {
-            this.currentId = r.id;
+        this.activatedRoute.params.subscribe((params: Params) => {
+            console.log(params["id"]);
+            this.currentId = params["id"];
         });
 
         this.isLoading = true;
-        this.vendor.get(this.currentId).subscribe(response_data => {
+        this.httpSubscription = this.vendor.read(this.currentId).subscribe(response_data => {
             this.isLoading = false;
             this.vendorData = response_data;
         });
 
+    }
+
+    ngOnDestroy() {
+        this.httpSubscription.unsubscribe();
     }
 }

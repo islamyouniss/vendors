@@ -3,12 +3,13 @@ import {
     HttpRequest,
     HttpHandler,
     HttpEvent,
-    HttpInterceptor
+    HttpInterceptor, HttpErrorResponse
 } from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 
 import {environment as env} from "../../environments/environment";
 import {AuthService} from "../services/auth.service";
+import {catchError} from "rxjs/operators";
 
 
 @Injectable()
@@ -30,7 +31,11 @@ export class AuthInterceptor implements HttpInterceptor {
                 });
             }
         }
-        return next.handle(request);
-
+        return next.handle(request).pipe(catchError(err => {
+            if (err instanceof HttpErrorResponse && err.status == 401) {
+                this.auth.logout();
+            }
+            return throwError(err);
+        }))
     }
 }

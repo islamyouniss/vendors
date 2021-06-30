@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -15,8 +15,18 @@ import {NavbarComponent} from './shared/components/navbar/navbar.component';
 import {NotFoundComponent} from './shared/components/not-found/not-found.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { VendorDetailsComponent } from './components/vendors/vendor-details/vendor-details.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ErrorComponent } from './shared/components/error/error.component';
+
 import {AuthInterceptor} from "./interceptors/auth.interceptor";
+
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+
+import { AngularFireAuthModule } from '@angular/fire/auth';
+
+import {environment} from "../environments/environment";
 
 
 @NgModule({
@@ -32,14 +42,21 @@ import {AuthInterceptor} from "./interceptors/auth.interceptor";
         NavbarComponent,
         NotFoundComponent,
         SpinnerComponent,
-        VendorDetailsComponent
+        VendorDetailsComponent,
+        ErrorComponent
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         HttpClientModule,
         FontAwesomeModule,
-        FormsModule
+        FormsModule,
+        ReactiveFormsModule,
+
+        AngularFireModule.initializeApp(environment.firebase.config),
+        AngularFirestoreModule, // firestore
+        AngularFireAuthModule, // auth
+        AngularFireStorageModule // storage
     ],
     providers: [
         {

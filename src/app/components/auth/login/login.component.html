@@ -10,19 +10,14 @@
 
         <!-- Login Form -->
         <div class="mt-5">
-            <app-spinner *ngIf="isLoading"></app-spinner>
-            <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" *ngIf="!isLoading">
+            <app-spinner *ngIf="isLoading && !error" class="mb-5"></app-spinner>
+            <app-error *ngIf="error&& !isLoading" [error]="error" (closeErrorMessage)="removeErrorMessage()" #errorMessage></app-error>
+            <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" *ngIf="!isLoading && !error">
                 <input type="email" id="login" class="fadeIn second" name="email" placeholder="email" value="email" ngModel required email>
                 <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" value="password" ngModel required minlength="6">
                 <button class="fadeIn fourth" value="Log In" [disabled]="!loginForm.valid">login</button>
             </form>
         </div>
-
-
-        <!-- Remind Passowrd -->
-        <!--<div id="formFooter">
-            <a class="underlineHover" href="#">Forgot Password?</a>
-        </div>-->
 
     </div>
 </div>

@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {AuthService} from "./auth.service";
-import {exhaustMap, map, take} from "rxjs/operators";
-import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
+import {map} from "rxjs/operators";
+
+import {environment} from "../../environments/environment";
 import {Vendor} from "../models/vendor.model";
 
 @Injectable({
@@ -26,9 +26,8 @@ export class VendorService {
         }));
     }
 
-    get(id: string) {
-        const url = this.url;
-        return this.http.get(url, {
+    read(id: string) {
+        return this.http.get(this.url, {
             params: {
                 orderBy: '"mobile"',
                 equalTo: '"' + id + '"'
@@ -39,11 +38,15 @@ export class VendorService {
         }));
     }
 
-    update() {
-
+    update(id: string, updatedData: Vendor) {
+        return this.http.patch(this.url, updatedData).subscribe();
     }
 
     delete() {
 
+    }
+
+    overwrite(vendors: Vendor[]) {
+        this.http.put(this.url, vendors).subscribe();
     }
 }

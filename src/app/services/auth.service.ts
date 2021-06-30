@@ -89,7 +89,7 @@ export class AuthService {
     }
 
     private static handleErrors(errorResponse: HttpErrorResponse) {
-        console.log(errorResponse);
+        console.log("error handling")
         let error_message = "Unknown Error Occurred!";
 
         switch (errorResponse.error.error.message) {

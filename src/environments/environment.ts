@@ -5,6 +5,16 @@
 export const environment = {
     production: true,
     firebase: {
+        config: {
+            apiKey: "AIzaSyCFDnHbr2km2otEO9M7trOBPHe2BaSKIq4",
+            authDomain: "crud-xc.firebaseapp.com",
+            databaseURL: "https://crud-xc-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "crud-xc",
+            storageBucket: "crud-xc.appspot.com",
+            messagingSenderId: "529812726122",
+            appId: "1:529812726122:web:1b471d1d0a05783b1c8513",
+            measurementId: "G-MB7H31TCSM"
+        },
         app_host: "https://crud-xc-default-rtdb.europe-west1.firebasedatabase.app/",
         key: "AIzaSyCFDnHbr2km2otEO9M7trOBPHe2BaSKIq4",
         auth: {

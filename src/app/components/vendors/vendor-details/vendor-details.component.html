@@ -26,11 +26,11 @@
         </div>
 
 
-        <div class="row icon-boxes" *ngFor="let attachment of vendorData.attachment">
+        <div class="row icon-boxes" >
             <h3>Attachments:</h3>
             <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
                 <div class="icon-box">
-                    <h4 class="title"><a href="{{attachment}}">Download Attachment</a></h4>
+                    <h4 class="title"><a href="{{vendorData.attachment}}" download>Download Attachment</a></h4>
                 </div>
             </div>
         </div>

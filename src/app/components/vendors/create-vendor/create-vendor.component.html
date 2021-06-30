@@ -22,7 +22,18 @@
                 <div class="form-row text-center">
                     <!--<button name="register" class="btn btn-outline-secondary">Register Vendor</button>-->
                     <input ngModel type="file" name="attachment" (change)="onSelectFiles($event)">
+                    <!--<button ngModel type="button" (click)="uploadFile()">Upload File</button>-->
+                    <div *ngIf="isUploadingFile">
+                        <div *ngIf="percentage | async as pct">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" [style.width]="pct+'%'" [attr.aria-valuenow]="pct" aria-valuemin="0" aria-valuemax="100">{{pct | number}}%</div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!--<div *ngFor="let file of files">
+                        <app-upload-task [file]="file"></app-upload-task>
+                    </div>-->
                 </div>
             </div>
             <!-- Contact Info -->

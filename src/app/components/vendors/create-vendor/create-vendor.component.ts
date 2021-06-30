@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {VendorService} from "../../../services/vendor.service";
 import {Vendor} from "../../../models/vendor.model";
 import {NgForm} from "@angular/forms";
+import {AngularFireStorage, AngularFireUploadTask} from "@angular/fire/storage";
+import {Observable} from "rxjs";
+import {finalize} from "rxjs/operators";
 
 @Component({
     selector: 'app-create-vendor',
@@ -25,6 +28,7 @@ export class CreateVendorComponent implements OnInit {
                 }
             ]
         };
+
         vendor_data_2: Vendor = {
             "address": "Jeddah",
             "attachment": "",
@@ -39,15 +43,17 @@ export class CreateVendorComponent implements OnInit {
             "name": "Banda"
         };*/
 
-    allVendors: Vendor[] = [];
-
+    /*allVendors: Vendor[] = [];*/
+    isUploadingFile: boolean = false;
     files: File[] = [];
+    task: AngularFireUploadTask;
+    percentage: Observable<number>;
+    snapshot: Observable<any>;
+    downloadURL: string;
 
-    constructor(private vendor: VendorService) { }
+    constructor(private vendor: VendorService, private storage: AngularFireStorage) { }
 
-    ngOnInit(): void {
-        //this.vendor.create(this.vendor_data_2);
-    }
+    ngOnInit(): void { }
 
     onCreateVendor(form: NgForm) {
         this.vendor_data = {
@@ -56,7 +62,7 @@ export class CreateVendorComponent implements OnInit {
             mobile: form.value.VendorPhone,
             email: form.value.vendorEmail,
             description: form.value.description,
-            attachment: form.value.attachment,
+            attachment: this.downloadURL,
             contacts: [
                 {
                     name: form.value.contactName,
@@ -65,17 +71,36 @@ export class CreateVendorComponent implements OnInit {
                 }
             ]
         }
-        //this.vendor.create(this.vendor_data);
-        console.log(form.value);
+        this.vendor.create(this.vendor_data);
+        form.resetForm();
+        this.isUploadingFile = false;
+        this.isUploadingFile = false;
+    }
+
+    uploadFile(fileToBeUploaded) {
+        const filePath = "crud/" + Date.now() + "_" + fileToBeUploaded.name;
+        const ref = this.storage.ref(filePath);
+        this.task = this.storage.upload(filePath, fileToBeUploaded);
+        this.percentage = this.task.percentageChanges();
+        /*this.snapshot = this.task.snapshotChanges().pipe(
+            finalize(async () => {
+                this.downloadURL = await ref.getDownloadURL().toPromise();
+            })
+        )*/
+        this.isUploadingFile = true;
+        this.task.snapshotChanges().subscribe(
+            async m => this.downloadURL = await m.ref.getDownloadURL().
+            then(f => {
+                console.clear();
+                return f
+            })
+        )
     }
 
     onSelectFiles(evt: Event) {
         const element = evt.currentTarget as HTMLInputElement;
         let files: FileList | null = element.files;
-        for (let i = 0; i < files.length; i++) {
-            this.files.push(files.item(i));
-        }
+        this.uploadFile(files[0]);
     }
 
-    AngularFireStorage
 }

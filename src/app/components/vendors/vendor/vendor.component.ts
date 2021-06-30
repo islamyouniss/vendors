@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router} from "@angular/router";
 
 import {faPlus, faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +15,7 @@ export class VendorComponent implements OnInit {
     faPlus = faPlus;
 
     @Input() vendorData: Vendor;
+    @Output() vendorDeleted = new EventEmitter<void>()
 
     isLoading: boolean = false;
     constructor(private router: Router) { }
@@ -27,6 +28,6 @@ export class VendorComponent implements OnInit {
     }
 
     delete() {
-        console.log("delete");
+        this.vendorDeleted.emit()
     }
 }

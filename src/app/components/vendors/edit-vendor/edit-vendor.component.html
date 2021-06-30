@@ -1,1 +1,63 @@
-<p>edit-vendor works!</p>
+
+<div class="page-content">
+    <app-spinner *ngIf="isLoading"></app-spinner>
+    <div class="form-v10-content" *ngIf="!isLoading">
+        <form class="form-detail"  #editVendorForm="ngForm" (ngSubmit)="onUpdateVendor()" [formGroup]="editForm">
+            <!-- Vendor Info -->
+            <div class="form-left">
+                <h2>Vendor Information</h2>
+                <div class="form-row">
+                    <input ngModel type="text" name="vendorName" placeholder="Name" required>
+                </div>
+                <div class="form-row">
+                    <input ngModel type="text" name="vendorAddress" placeholder="Address" required>
+                </div>
+                <div class="form-row">
+                    <input ngModel type="email" name="vendorEmail" required pattern="[^@]+@[^@]+.[a-zA-Z]{2,6}" placeholder="Email">
+                </div>
+                <div class="form-row">
+                    <input ngModel type="text" name="vendorPhone"  placeholder="Phone" required>
+                </div>
+                <div class="form-row">
+                    <textarea ngModel name="description" placeholder="Description" required></textarea>
+                </div>
+                <div class="form-row text-center">
+                    <!--<button name="register" class="btn btn-outline-secondary">Register Vendor</button>-->
+                    <!--<input ngModel type="file" name="attachment" (change)="onSelectFiles($event)">-->
+                    <!--<button ngModel type="button" (click)="uploadFile()">Upload File</button>-->
+                    <div *ngIf="isUploadingFile">
+                        <div *ngIf="percentage | async as pct">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" [style.width]="pct+'%'" [attr.aria-valuenow]="pct" aria-valuemin="0" aria-valuemax="100">{{pct | number}}%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div *ngFor="let file of files">
+                        <app-upload-task [file]="file"></app-upload-task>
+                    </div>-->
+                </div>
+            </div>
+            <!-- Contact Info -->
+            <div class="form-right">
+                <h2>Contact Details</h2>
+                <div class="form-row">
+                    <input ngModel type="text" name="contactName" placeholder="Name" required>
+                </div>
+                <div class="form-row">
+                    <input ngModel type="text" name="contactMobile" placeholder="Mobile" required>
+                </div>
+                <div class="form-row">
+                    <input ngModel type="text" name="contactEmail" required [pattern]="'[^@]+@[^@]+.[a-zA-Z]{2,6}'" placeholder="Email">
+                </div>
+                <!--<div class="form-row text-center">
+                    <button type="button" name="addContact" class="btn btn-outline-light">Add Contact</button>
+                </div>-->
+            </div>
+
+            <div class=" text-center my-3">
+                <button name="register" class="btn btn-outline-secondary" type="submit" [disabled]="!editVendorForm.valid">Update Vendor</button>
+            </div>
+        </form>
+
+    </div>
+</div>
