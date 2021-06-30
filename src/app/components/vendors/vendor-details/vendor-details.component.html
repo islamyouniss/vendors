@@ -1,0 +1,41 @@
+<app-spinner *ngIf="isLoading"></app-spinner>
+<section id="hero" class="d-flex align-items-center" *ngIf="!isLoading">
+    <div class="container position-relative"  >
+        <div class="row justify-content-center">
+            <div class="col-xl-7 col-lg-9 text-center">
+                <h1>{{vendorData.name}}</h1>
+                <h2>{{vendorData.address}}</h2>
+                <h2><a href="tel:{{vendorData.mobile}}">{{vendorData.mobile}}</a> | <a href="mailTo:{{vendorData.email}}">{{vendorData.email}}</a> </h2>
+            </div>
+        </div>
+        <div class="text-center my-3">
+            <!--<a href="#about" class="btn-get-started scrollto">Get Started</a>-->
+            {{vendorData.description}}
+        </div>
+
+        <div class="row icon-boxes" *ngFor="let contactInfo of vendorData.contacts">
+            <h3>Contacts</h3>
+            <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
+                <div class="icon-box">
+                    <div class="icon"></div>
+                    <h4 class="title">{{contactInfo.name}}</h4>
+                    <p class="description"><a href="mailto:{{contactInfo.email}}">{{contactInfo.email}}</a></p>
+                    <p class="description"><a href="tel:{{contactInfo.mobile}}">{{contactInfo.mobile}}</a></p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row icon-boxes" *ngFor="let attachment of vendorData.attachment">
+            <h3>Attachments:</h3>
+            <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
+                <div class="icon-box">
+                    <h4 class="title"><a href="{{attachment}}">Download Attachment</a></h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--<pre *ngIf="!isLoading">
+    {{vendorData | json}}
+</pre>-->

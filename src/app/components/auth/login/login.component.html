@@ -1,0 +1,28 @@
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+
+        <!-- Icon -->
+        <!-- <div class="fadeIn first">
+                    &lt;!&ndash;<img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />&ndash;&gt;
+                    <fa-icon [icon]="faUser"></fa-icon>
+        </div>-->
+
+        <!-- Login Form -->
+        <div class="mt-5">
+            <app-spinner *ngIf="isLoading"></app-spinner>
+            <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" *ngIf="!isLoading">
+                <input type="email" id="login" class="fadeIn second" name="email" placeholder="email" value="email" ngModel required email>
+                <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" value="password" ngModel required minlength="6">
+                <button class="fadeIn fourth" value="Log In" [disabled]="!loginForm.valid">login</button>
+            </form>
+        </div>
+
+
+        <!-- Remind Passowrd -->
+        <!--<div id="formFooter">
+            <a class="underlineHover" href="#">Forgot Password?</a>
+        </div>-->
+
+    </div>
+</div>

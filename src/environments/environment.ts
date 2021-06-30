@@ -3,7 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: true,
+    firebase: {
+        app_host: "https://crud-xc-default-rtdb.europe-west1.firebasedatabase.app/",
+        key: "AIzaSyCFDnHbr2km2otEO9M7trOBPHe2BaSKIq4",
+        auth: {
+            host: "https://identitytoolkit.googleapis.com/v1/accounts:"
+        }
+    }
 };
 
 /*
