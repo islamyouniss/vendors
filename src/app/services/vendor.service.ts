@@ -14,7 +14,8 @@ export class VendorService {
     constructor(private http: HttpClient) {  }
 
     create(data: Vendor) {
-        this.http.post(this.url, data).subscribe(responseData => {
+        let new_vendor_data = this.convert_form_to_vendor(data);
+        this.http.post(this.url, new_vendor_data).subscribe(responseData => {
             console.log(responseData);
         });
     }
@@ -22,11 +23,15 @@ export class VendorService {
     list() {
         return this.http.get(this.url).pipe(map((response_data) => {
             let allVendors: Vendor[] = Object.values(response_data);
+            Object.values(response_data).forEach((vendor,index) => {
+                vendor.id = Object.keys(response_data)[index];
+            });
+
             return allVendors;
         }));
     }
 
-    read(id: string) {
+    get(id: string) {
         return this.http.get(this.url, {
             params: {
                 orderBy: '"mobile"',
@@ -34,19 +39,44 @@ export class VendorService {
             }
         }).pipe(map((response_data) => {
             let vendor: Vendor = Object.values(response_data)[0];
+            vendor.id = Object.keys(response_data)[0];
             return vendor;
         }));
     }
 
     update(id: string, updatedData: Vendor) {
-        return this.http.patch(this.url, updatedData).subscribe();
+        let new_vendor_data = this.convert_form_to_vendor(updatedData);
+        return this.http.patch(this.url, new_vendor_data).subscribe();
     }
 
-    delete() {
 
+    convert_form_to_vendor(form_values) {
+        let data = {};
+        let data_without_id = {
+            name: form_values.vendorName,
+            address: form_values.vendorAddress,
+            mobile: form_values.vendorPhone,
+            email: form_values.vendorEmail,
+            description: form_values.description,
+            attachments: form_values.attachments,
+            contacts: form_values.contacts
+        }
+
+        if(form_values.id) {
+            let id = form_values.id
+            data[id] = data_without_id;
+        } else {
+            data = data_without_id;
+        }
+        return JSON.stringify(data);
     }
 
-    overwrite(vendors: Vendor[]) {
+    delete(id: string) {
+        let itemToBeDeletedUrl = this.url.replace(".json", "/") + id + ".json";
+        this.http.delete(itemToBeDeletedUrl).subscribe();
+    }
+
+    put(vendors: Vendor[]) {
         this.http.put(this.url, vendors).subscribe();
     }
 }

@@ -1,130 +1,86 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {environment as env} from "../../environments/environment";
-import {NgForm} from "@angular/forms";
-import {catchError, tap} from "rxjs/operators";
-import {BehaviorSubject, Subject, throwError} from "rxjs";
-import {User} from "../models/User.model";
+import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
 
+import {AngularFireAuth} from "@angular/fire/auth";
+import {AngularFirestore, AngularFirestoreDocument} from "@angular/fire/firestore";
 
-export interface firebaseResponse {
-    idToken: string;
-    email: string;
-    refreshToken: string;
-    expiresIn: string;
-    localId: string;
-    registered?: boolean;
-}
-
+import {switchMap} from "rxjs/operators";
+import {User} from "../models/User.model";
+import {Observable, of} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    /*private readonly token: string = "token";
-    private readonly refresh_token: string = "";*/
+    user: Observable<User>;
 
-    user = new BehaviorSubject<User | null>(null);
-    logUserOutTimer: any;
-
-    constructor(private http: HttpClient, private router: Router) { }
-
-    autoLogUserIn() {
-        const user_data = JSON.parse(localStorage.getItem("user_data") || "{}");
-        if (user_data === "") {
-            return;
-        }
-        const expiration_date = new Date(new Date().getTime() + (+user_data.expiresIn * 1000));
-        const userToBeLoggedIn = new User(user_data.email, user_data.localId, user_data.idToken, expiration_date);
-        if (userToBeLoggedIn.token) {
-            const timeLeftToLogout = new Date(userToBeLoggedIn.token_expiration).getTime() - new Date().getTime();
-            this.autoLogUserOut(timeLeftToLogout);
-            this.user.next(userToBeLoggedIn);
-        }
-    }
-
-    autoLogUserOut(expiresIn: number) {
-        this.logUserOutTimer = setTimeout(() => this.logout(), expiresIn);
-    }
-
-    register(form: NgForm) {
-        const host = env.firebase.auth.host + "signUp";
-        const body = {
-            email: form.form.value.email,
-            password: form.form.value.password,
-            returnSecureToken: true
-        };
-        return this.http.post<firebaseResponse>(host, body).pipe(
-            catchError(AuthService.handleErrors),
-            tap((response_data: firebaseResponse) => {
-                this.logUserIn(response_data);
-            }));
-    }
-
-    login(form: NgForm) {
-        const host = env.firebase.auth.host + "signInWithPassword";
-        const body = {
-            email: form.form.value.email,
-            password: form.form.value.password,
-            returnSecureToken: true
-        };
-
-        return this.http.post<firebaseResponse>(host, body).pipe(
-            catchError(AuthService.handleErrors),
-            tap((response_data: firebaseResponse) => {
-                this.logUserIn(response_data);
+    constructor(
+        private afAuth: AngularFireAuth,
+        private afs: AngularFirestore,
+        private router: Router
+    ) {
+        this.user = this.afAuth.authState.pipe(
+            switchMap(user => {
+                if (user) {
+                    return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
+                } else {
+                    return of(null);
+                }
             })
-        );
+        )
     }
 
-    logout() {
-        this.user.next(null);
-        localStorage.removeItem("user_data");
-        if (this.logUserOutTimer) {
-            clearTimeout(this.logUserOutTimer);
+    async login(email: string, password: string) {
+        await this.afAuth.signInWithEmailAndPassword(email, password).then(response => {
+            const user_data = {uid: response.user.uid, email: response.user.email};
+            return this.updateUserData(user_data);
+        })
+    }
+
+    async logout() {
+        await this.afAuth.signOut();
+        return this.router.navigate(["/login"])
+    }
+
+    //can add more data in this method
+    private updateUserData({uid, email}: User) {
+        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`)
+        const data = {
+            uid,
+            email,
+            roles: {
+                viewer: true
+            }
+        };
+        return userRef.set(data, {merge: true});
+    }
+
+    checkAuthorization(user: User, allowedRoles: string[]): boolean {
+        if (!user) return false;
+        for(const role of allowedRoles) {
+            if (user.roles[role]) {
+                return true;
+            }
         }
-        this.router.navigate(["/login"]);
-        this.logUserOutTimer = null;
+        return false;
     }
 
-    private static handleErrors(errorResponse: HttpErrorResponse) {
-        console.log("error handling")
-        let error_message = "Unknown Error Occurred!";
-
-        switch (errorResponse.error.error.message) {
-            case "EMAIL_NOT_FOUND": {
-                error_message = "You Are Not Registered!";
-                break;
-            }
-            case "INVALID_PASSWORD": {
-                error_message = "Wrong Password";
-                break;
-            }
-            case "EMAIL_EXISTS": {
-                error_message = "You Are Already Registered!";
-                break;
-            }
-            case "TOO_MANY_ATTEMPTS_TRY_LATER": {
-                error_message = "You Have Tried Too Many Times, Please Try Again Later!"
-                break;
-            }
-        }
-
-        return throwError(error_message);
+    canRead(user: User): boolean {
+        const allowedRoles = ["admin", "editor", "viewer"];
+        return this.checkAuthorization(user, allowedRoles);
     }
 
-    private logUserIn(user_data: firebaseResponse) {
-        const expiration_date = new Date(new Date().getTime() + (+user_data.expiresIn * 1000));
-        const user = new User(user_data.email, user_data.localId, user_data.idToken, expiration_date);
-
-        localStorage.setItem("user_data", JSON.stringify(user_data));
-        //localStorage.setItem("refresh_token", user_data.refreshToken);
-        this.autoLogUserOut(expiration_date.getTime());
-        this.user.next(user);
+    canUpdate(user: User): boolean {
+        const allowedRoles = ["admin", "editor"];
+        return this.checkAuthorization(user, allowedRoles);
+    }
+    canCreate(user: User): boolean {
+        const allowedRoles = ["admin", "editor"];
+        return this.checkAuthorization(user, allowedRoles);
     }
 
-    isTokenValid() {
-        return !!this.user.subscribe(currentUser => currentUser?.token);
+    canDelete(user: User): boolean {
+        const allowedRoles = ["admin"];
+        return this.checkAuthorization(user, allowedRoles);
     }
 }

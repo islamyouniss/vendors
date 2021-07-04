@@ -1,7 +1,15 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Vendors APP </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -14,9 +22,29 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-success" type="submit"></button>
             </form>-->
-            <span *ngIf="isAuthenticated" style="color: white; margin-right: 1em;"> {{user_email}} </span>
-            <fa-icon routerLink="/login" *ngIf="!isAuthenticated" [icon]="faSignIn" size="2x" style="color: white; cursor: pointer;"></fa-icon>
-            <fa-icon (click)="logout()" *ngIf="isAuthenticated" [icon]="faSignOut" size="2x" style="color: white; cursor: pointer;"></fa-icon>
+            <div *ngIf="auth.user | async as user; else login" class="d-flex align-middle">
+                <span style="color: white; margin-right: 1em;"> {{user.displayName}} </span>
+                <fa-icon
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Log out"
+                    (click)="auth.logout()"
+                    [icon]="faSignOut"
+                    size="2x"
+                    style="color: white; cursor: pointer;"
+                ></fa-icon>
+            </div>
+            <ng-template #login>
+                <fa-icon
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Log in"
+                    routerLink="/login"
+                    [icon]="faSignIn"
+                    size="2x"
+                    style="color: white; cursor: pointer;"
+                ></fa-icon>
+            </ng-template>
         </div>
     </div>
 </nav>

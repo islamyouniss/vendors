@@ -5,6 +5,7 @@ import { AuthService } from "../../../services/auth.service";
 import {Router} from "@angular/router";
 
 import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {HotToastService} from "@ngneat/hot-toast";
 
 
 @Component({
@@ -15,31 +16,21 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
 export class LoginComponent implements OnInit {
     faUser = faUser;
     @ViewChild("errorMessage", {static: true}) errorMessageComponent : ComponentRef<any>;
-    isLoggedIn: boolean = false;
     isLoading: boolean = false;
-    error = "";
-    constructor(private auth: AuthService, private router: Router) { }
+
+    constructor(private auth: AuthService, private router: Router, private toast: HotToastService) { }
 
     ngOnInit(): void { }
 
     login(loginForm: NgForm) {
         this.isLoading = true;
-        this.auth.login(loginForm).subscribe((response) => {
+        this.auth.login(loginForm.value.email, loginForm.value.password).then(() => {
+            this.router.navigate(["/vendors"]);
+        }).catch(err => {
+            this.toast.error(err.message, {dismissible: true,position: 'top-center'});
             this.isLoading = false;
-            this.router.navigate(["/"]);
-            this.isLoggedIn = true;
-        }, (err_message) => {
-            this.isLoading = false;
-            console.log(err_message);
-            this.error = err_message
-
-            /*this.showMessage(err_message);*/
-        });
+            loginForm.resetForm();
+        })
         loginForm.resetForm();
-    }
-
-    removeErrorMessage() {
-        this.error = "";
-        this.errorMessageComponent.destroy();
     }
 }

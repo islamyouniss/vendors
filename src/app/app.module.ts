@@ -27,6 +27,8 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
 import {environment} from "../environments/environment";
+import { VendorFormComponent } from './components/vendors/vendor-form/vendor-form.component';
+import { HotToastModule } from '@ngneat/hot-toast';
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import {environment} from "../environments/environment";
         NotFoundComponent,
         SpinnerComponent,
         VendorDetailsComponent,
-        ErrorComponent
+        ErrorComponent,
+        VendorFormComponent
     ],
     imports: [
         BrowserModule,
@@ -56,7 +59,7 @@ import {environment} from "../environments/environment";
         AngularFireModule.initializeApp(environment.firebase.config),
         AngularFirestoreModule, // firestore
         AngularFireAuthModule, // auth
-        AngularFireStorageModule // storage
+        AngularFireStorageModule, HotToastModule.forRoot() // storage
     ],
     providers: [
         {

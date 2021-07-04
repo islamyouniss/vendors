@@ -22,12 +22,11 @@ export class VendorDetailsComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.activatedRoute.params.subscribe((params: Params) => {
-            console.log(params["id"]);
             this.currentId = params["id"];
         });
 
         this.isLoading = true;
-        this.httpSubscription = this.vendor.read(this.currentId).subscribe(response_data => {
+        this.httpSubscription = this.vendor.get(this.currentId).subscribe(response_data => {
             this.isLoading = false;
             this.vendorData = response_data;
         });

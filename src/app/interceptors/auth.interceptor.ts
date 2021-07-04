@@ -23,13 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
             request = request.clone({
                 setParams: { key: env.firebase.key}
             });
-        } else if (this.auth.isTokenValid() && request.url.includes(env.firebase.app_host)) {
-            const token = JSON.parse(localStorage.getItem("user_data") || "").idToken;
-            if (token) {
-                request = request.clone({
-                    setParams: { auth: token }
-                });
-            }
         }
         return next.handle(request).pipe(catchError(err => {
             if (err instanceof HttpErrorResponse && err.status == 401) {

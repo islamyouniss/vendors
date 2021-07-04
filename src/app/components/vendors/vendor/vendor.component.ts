@@ -3,6 +3,8 @@ import {Router} from "@angular/router";
 
 import {faPlus, faEdit, faTrash} from "@fortawesome/free-solid-svg-icons";
 import {Vendor} from "../../../models/vendor.model";
+import {AuthService} from "../../../services/auth.service";
+import {User} from "../../../models/User.model";
 
 @Component({
     selector: 'app-vendor',
@@ -17,10 +19,13 @@ export class VendorComponent implements OnInit {
     @Input() vendorData: Vendor;
     @Output() vendorDeleted = new EventEmitter<void>()
 
+    user: User
+
     isLoading: boolean = false;
-    constructor(private router: Router) { }
+    constructor(private router: Router, public auth: AuthService) { }
 
     ngOnInit(): void {
+        this.auth.user.subscribe(user => this.user = user);
     }
 
     showVendorDetails() {
@@ -28,6 +33,8 @@ export class VendorComponent implements OnInit {
     }
 
     delete() {
-        this.vendorDeleted.emit()
+        if(this.auth.canDelete(this.user)) {
+            this.vendorDeleted.emit();
+        }
     }
 }

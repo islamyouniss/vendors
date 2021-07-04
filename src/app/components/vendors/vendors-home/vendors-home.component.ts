@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Vendor} from "../../../models/vendor.model";
 import {VendorService} from "../../../services/vendor.service";
+import { HotToastService } from '@ngneat/hot-toast';
 
 @Component({
     selector: 'app-vendors-home',
@@ -15,7 +16,7 @@ export class VendorsHomeComponent implements OnInit {
     error;
     allVendors: Vendor[] = [];
 
-    constructor(private vendor: VendorService) { }
+    constructor(private vendor: VendorService, private toast: HotToastService) { }
 
     ngOnInit(): void {
         this.isLoading = true;
@@ -30,7 +31,8 @@ export class VendorsHomeComponent implements OnInit {
     deleteVendor(vendor: Vendor) {
         const toBeDeletedIndex = this.allVendors.indexOf(this.allVendors.find(x => x.mobile == vendor.mobile));
         this.allVendors.splice(toBeDeletedIndex, 1);
-        this.vendor.overwrite(this.allVendors);
+        this.vendor.delete(vendor.id);
+        this.toast.success('Vendor Deleted', {dismissible: true,position: 'top-right'});
     }
 
 

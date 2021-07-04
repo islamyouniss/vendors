@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "crud-xc": {
+      "hosting": {
+        "vendors": [
+          "crud-xc"
+        ]
+      }
+    }
+  }
+}
