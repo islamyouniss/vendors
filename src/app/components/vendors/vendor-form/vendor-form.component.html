@@ -28,8 +28,8 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="completedUploadedFiles.length > 0">
-                        <div class="card mt-2" *ngFor="let file of completedUploadedFiles; let i = index">
+                    <div *ngIf="uploadedFiles.length > 0">
+                        <div class="card mt-2" *ngFor="let file of uploadedFiles; let i = index">
                             <div class="card-body d-flex justify-content-between">
                                 <a [href]="file.url">{{file.name}}</a>
                                 <a class="btn btn-danger" (click)="deleteAttachment(i)"><fa-icon [icon]="faTrash" style="color: white"></fa-icon></a>

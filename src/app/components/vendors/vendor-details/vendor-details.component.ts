@@ -30,7 +30,6 @@ export class VendorDetailsComponent implements OnInit, OnDestroy {
             this.isLoading = false;
             this.vendorData = response_data;
         });
-
     }
 
     ngOnDestroy() {
