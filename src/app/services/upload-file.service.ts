@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {AngularFireStorage} from "@angular/fire/storage";
 
-import {finalize, map, tap} from "rxjs/operators";
+import {finalize, tap} from "rxjs/operators";
 
 import {FileUpload} from "../models/FileUpload.model";
-import {from, observable, Observable, of, Subject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +12,7 @@ import {from, observable, Observable, of, Subject} from "rxjs";
 export class UploadFileService {
     private basePath: string = "crud";
     uploadedFiles = new Subject();
+    isUploading = new BehaviorSubject(false);
 
     constructor(private storage: AngularFireStorage) { }
 
@@ -20,16 +21,25 @@ export class UploadFileService {
         const storageRef = this.storage.ref(filePath);
         const uploadTask = this.storage.upload(filePath, fileUpload.file);
         uploadTask.snapshotChanges().pipe(
+            tap(() => {
+                this.isUploading.next(true);
+            }),
             finalize(() => {
                 storageRef.getDownloadURL().subscribe(downloadURL => {
                     fileUpload.url = downloadURL;
                     fileUpload.name = fileUpload.file.name;
                     this.uploadedFiles.next(fileUpload);
+                    this.isUploading.next(false);
+
                 });
             })
         ).subscribe();
 
         return uploadTask.percentageChanges();
+    }
+
+    isUploadingFile() {
+        return this.isUploading
     }
 
     getFiles() {

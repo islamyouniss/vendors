@@ -29,7 +29,7 @@ export class VendorFormComponent implements OnInit {
 
     constructor(
         private vendor: VendorService,
-        private fileService: UploadFileService,
+        public fileService: UploadFileService,
         private toast: HotToastService) { }
 
     ngOnInit() {
