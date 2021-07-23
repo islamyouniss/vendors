@@ -22,7 +22,6 @@ export class VendorFormComponent implements OnInit {
 
     @Input() vendorInfo: Vendor;
     vendorForm: FormGroup;
-
     currentFileUpload?: FileUpload;
     percentage: number = 0;
     uploadedFiles = [];
@@ -49,11 +48,11 @@ export class VendorFormComponent implements OnInit {
         let vendorContacts = new FormArray([]);
 
         if (this.vendorInfo) {
-            vendorName = this.vendorInfo ? this.vendorInfo.name : null;
-            vendorEmail = this.vendorInfo ? this.vendorInfo.email : null;
-            vendorPhone = this.vendorInfo ? this.vendorInfo.mobile : null;
-            vendorAddress = this.vendorInfo ? this.vendorInfo.address : null;
-            description = this.vendorInfo ? this.vendorInfo.description : null;
+            vendorName = this.vendorInfo.name;
+            vendorEmail = this.vendorInfo.email;
+            vendorPhone = this.vendorInfo.mobile;
+            vendorAddress = this.vendorInfo.address;
+            description = this.vendorInfo.description;
 
             if (this.vendorInfo.contacts) {
                 for (let contact of this.vendorInfo.contacts) {
@@ -125,7 +124,7 @@ export class VendorFormComponent implements OnInit {
                         console.log(error);
                     },
                     () => {
-                        this.fileService.getFiles().subscribe((uploadedFileData:FileUpload) => {
+                        this.fileService.getFiles().subscribe((uploadedFileData: FileUpload) => {
                             this.uploadedFiles.push({
                                 name: uploadedFileData.name,
                                 url: uploadedFileData.url
@@ -134,6 +133,13 @@ export class VendorFormComponent implements OnInit {
                     }
                 );
         }
+    }
+
+    restForm() {
+        this.vendorForm.reset();
+        this.uploadedFiles = [];
+        this.percentage = 0;
+        this.createForm();
     }
 
     onSubmitForm() {
@@ -146,8 +152,7 @@ export class VendorFormComponent implements OnInit {
             this.vendorForm.value.attachments = this.uploadedFiles;
             this.vendor.create(this.vendorForm.value);
             this.toast.success('Vendor Created', {dismissible: true, position: 'top-right'});
-            this.vendorForm.reset();
+            this.restForm();
         }
     }
-
 }

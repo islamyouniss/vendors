@@ -30,11 +30,9 @@ export class UploadFileService {
                     fileUpload.name = fileUpload.file.name;
                     this.uploadedFiles.next(fileUpload);
                     this.isUploading.next(false);
-
                 });
             })
         ).subscribe();
-
         return uploadTask.percentageChanges();
     }
 

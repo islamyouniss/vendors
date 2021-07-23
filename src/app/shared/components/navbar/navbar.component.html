@@ -23,6 +23,7 @@
                 <button class="btn btn-success" type="submit"></button>
             </form>-->
             <div *ngIf="auth.user | async as user; else login" class="d-flex align-middle">
+                <a *ngIf="auth.canDelete(user)" style="color: white; margin-right: 1em;" routerLink="/create-user">Add User</a>
                 <span style="color: white; margin-right: 1em;"> {{user.displayName}} </span>
                 <fa-icon
                     data-bs-toggle="tooltip"

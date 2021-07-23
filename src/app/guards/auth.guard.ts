@@ -10,13 +10,14 @@ import {Observable} from 'rxjs';
 import {AuthService} from "../services/auth.service";
 import {map, take, tap} from "rxjs/operators";
 import {loggedIn} from "@angular/fire/auth-guard";
+import {HotToastService} from "@ngneat/hot-toast";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-    constructor(private auth: AuthService, private router: Router) {}
+    constructor(private auth: AuthService, private router: Router, private toast: HotToastService) {}
 
     canActivate(
         route: ActivatedRouteSnapshot,
@@ -26,12 +27,11 @@ export class AuthGuard implements CanActivate {
             map(user => !!user),
             tap(loggedIn => {
                 if (!loggedIn) {
-                    this.router.navigate(["/login"]);
+                    this.router.navigate(["/login"]).then(() => {
+                        this.toast.warning("You Have To Login To View This Page!", {dismissible: true, position: 'top-right'});
+                    })
                 }
             })
         )
-/*            map((user) => {
-                return this.router.createUrlTree(["/login"]);
-            }));*/
     }
 }

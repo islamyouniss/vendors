@@ -1,5 +1,5 @@
-<div class="row mt-3 w-25">
-    <a routerLink="create" class="btn btn-success"><fa-icon [icon]="faPlus"></fa-icon>  Add New Vendor</a>
+<div class="row mt-3 w-25" *ngIf="auth.canCreate(user)">
+    <a routerLink="create" class="btn btn-success"><fa-icon [icon]="faPlus"></fa-icon> Add New Vendor</a>
 </div>
 <app-spinner *ngIf="isLoading"></app-spinner>
 <div class="row mt-3 vendors-container" *ngIf="!isLoading">

@@ -8,6 +8,8 @@ import {VendorDetailsComponent} from "./components/vendors/vendor-details/vendor
 import {NotFoundComponent} from "./shared/components/not-found/not-found.component";
 import {LoginComponent} from "./components/auth/login/login.component";
 import {AuthGuard} from "./guards/auth.guard";
+import {SignupComponent} from "./components/auth/signup/signup.component";
+import {AdminGuard} from "./guards/admin.guard";
 
 const routes: Routes = [
     {
@@ -30,6 +32,11 @@ const routes: Routes = [
     {
         path: "login",
         component: LoginComponent
+    },
+    {
+        path: "create-user",
+        component: SignupComponent,
+        canActivate: [AdminGuard]
     },
     {
         path: "**",

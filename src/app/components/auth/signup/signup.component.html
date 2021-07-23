@@ -1,0 +1,29 @@
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <div class="mt-5">
+            <app-spinner *ngIf="isLoading" class="mb-5"></app-spinner>
+            <form #signupForm="ngForm" (ngSubmit)="signup(signupForm)" *ngIf="!isLoading">
+                <input type="text" name="name" placeholder="Full Name" value="name" ngModel required>
+                <input type="email" name="email" placeholder="email" value="email" ngModel required email>
+                <input type="password" name="password" placeholder="password" value="password" ngModel required minlength="6">
+                <div class="form-check">
+                    <input type="radio" class="mx-3" id="admin-role" name="userRole" value="admin" ngModel>
+                    <label for="admin-role">Admin</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="mx-3" id="editor-role" name="userRole" value="entry" ngModel>
+                    <label for="editor-role">Editor</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="mx-3" id="viewer-role" name="userRole" value="viewer" ngModel>
+                    <label for="viewer-role">Viewer</label>
+                </div>
+                <button value="Log In" [disabled]="!signupForm.valid">Signup</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+

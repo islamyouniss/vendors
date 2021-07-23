@@ -11,7 +11,7 @@ import {Vendor} from "../../../models/vendor.model";
 })
 export class EditVendorComponent implements OnInit, OnDestroy {
     isLoading: boolean = false;
-    httpSubscription: Subscription;
+    gettingVendorDataSubscription: Subscription;
     vendor_data: Vendor;
     currentId: string = "";
 
@@ -27,13 +27,13 @@ export class EditVendorComponent implements OnInit, OnDestroy {
         });
 
         this.isLoading = true;
-        this.httpSubscription = this.vendor.get(this.currentId).subscribe(response_data => {
+        this.gettingVendorDataSubscription = this.vendor.get(this.currentId).subscribe(response_data => {
             this.isLoading = false;
             this.vendor_data = response_data;
         });
     }
 
     ngOnDestroy() {
-        this.httpSubscription.unsubscribe();
+        this.gettingVendorDataSubscription.unsubscribe();
     }
 }

@@ -30,11 +30,25 @@ export class AuthService {
         )
     }
 
+    async signup(name: string, email: string, password: string, role: string) {
+        await this.afAuth.createUserWithEmailAndPassword(email, password).then(response => {
+            let userRoles = {
+                viewer: true
+            }
+            userRoles[role] = true;
+            return this.addUserData({
+                uid: response.user.uid,
+                email: response.user.email,
+                displayName: name,
+                roles: userRoles
+            });
+        })
+    }
+
     async login(email: string, password: string) {
         await this.afAuth.signInWithEmailAndPassword(email, password).then(response => {
-            const user_data = {uid: response.user.uid, email: response.user.email};
-            return this.updateUserData(user_data);
-        })
+            return this.updateUserData({uid: response.user.uid, email: response.user.email});
+        });
     }
 
     async logout() {
@@ -42,9 +56,20 @@ export class AuthService {
         return this.router.navigate(["/login"])
     }
 
-    //can add more data in this method
+    private addUserData({uid, email, roles, displayName}: User) {
+        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`);
+        const data = {
+            uid,
+            email,
+            displayName,
+            roles
+        };
+        return userRef.set(data, {merge: true});
+    }
+
+    //can add more data for the user in this method
     private updateUserData({uid, email}: User) {
-        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`)
+        const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`);
         const data = {
             uid,
             email,

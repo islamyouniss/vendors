@@ -15,9 +15,7 @@ export class VendorService {
 
     create(data: Vendor) {
         let new_vendor_data = this.convert_form_to_vendor(data);
-        this.http.post(this.url, new_vendor_data).subscribe(responseData => {
-            console.log(responseData);
-        });
+        this.http.post(this.url, new_vendor_data).subscribe();
     }
 
     list() {
@@ -26,7 +24,6 @@ export class VendorService {
             Object.values(response_data).forEach((vendor,index) => {
                 vendor.id = Object.keys(response_data)[index];
             });
-
             return allVendors;
         }));
     }
@@ -46,7 +43,7 @@ export class VendorService {
 
     update(id: string, updatedData: Vendor) {
         let new_vendor_data = this.convert_form_to_vendor(updatedData);
-        return this.http.patch(this.url, new_vendor_data).subscribe();
+        this.http.patch(this.url, new_vendor_data).subscribe();
     }
 
 

@@ -3,6 +3,8 @@ import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Vendor} from "../../../models/vendor.model";
 import {VendorService} from "../../../services/vendor.service";
 import { HotToastService } from '@ngneat/hot-toast';
+import {AuthService} from "../../../services/auth.service";
+import {User} from "../../../models/User.model";
 
 @Component({
     selector: 'app-vendors-home',
@@ -15,10 +17,11 @@ export class VendorsHomeComponent implements OnInit {
     isLoading: boolean = false;
     error;
     allVendors: Vendor[] = [];
-
-    constructor(private vendor: VendorService, private toast: HotToastService) { }
+    user: User;
+    constructor(private vendor: VendorService, public auth: AuthService, private toast: HotToastService) { }
 
     ngOnInit(): void {
+        this.auth.user.subscribe(user => this.user = user);
         this.isLoading = true;
         this.vendor.list().subscribe((v:Vendor[]) => {
             this.isLoading = false;

@@ -29,6 +29,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import {environment} from "../environments/environment";
 import { VendorFormComponent } from './components/vendors/vendor-form/vendor-form.component';
 import { HotToastModule } from '@ngneat/hot-toast';
+import { SignupComponent } from './components/auth/signup/signup.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { HotToastModule } from '@ngneat/hot-toast';
         SpinnerComponent,
         VendorDetailsComponent,
         ErrorComponent,
-        VendorFormComponent
+        VendorFormComponent,
+        SignupComponent
     ],
     imports: [
         BrowserModule,

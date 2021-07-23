@@ -3,7 +3,6 @@
         <!-- Login Form -->
         <div class="mt-5">
             <app-spinner *ngIf="isLoading" class="mb-5"></app-spinner>
-            <!--<app-error *ngIf="error&& !isLoading" [error]="error" (closeErrorMessage)="removeErrorMessage()" #errorMessage></app-error>-->
             <form #loginForm="ngForm" (ngSubmit)="login(loginForm)" *ngIf="!isLoading">
                 <input type="email" id="login" class="fadeIn second" name="email" placeholder="email" value="email" ngModel required email>
                 <input type="password" id="password" class="fadeIn third" name="password" placeholder="password" value="password" ngModel required minlength="6">
